@@ -11,30 +11,27 @@ using UnityEngine;
 public class LookAtTrigger : MonoBehaviour
 {
     public Transform aTf;
-    public Transform bTf;
-    public float dot;
-    [Range(0f,5f)]
-    public float radius;
     [Range(0f,1f)]
     public float threshold;
+    
+    private float _dot;
+
     private void OnDrawGizmos()
     {
         Vector2 a = aTf.position;
-        Vector2 b = bTf.position;
         Vector2 origin = transform.position;
+        
+        Vector2 lookDirection = aTf.right;
+        Vector2 aToOriginDirection = (origin - a).normalized;
+
+        _dot = Vector2.Dot(lookDirection, aToOriginDirection);
+        Gizmos.DrawLine(a,a+lookDirection);
+
+        bool isLooking = threshold < _dot;
+        
+        Gizmos.color = isLooking? Color.green : Color.red;
+        Gizmos.DrawLine(a,a+aToOriginDirection);
 
 
-        dot = Vector2.Dot(a.normalized, b.normalized);
-        
-        
-        
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(a,origin);
-        
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(b,origin);
-
-        Handles.color = dot < threshold ? Color.red : Color.green;
-        Handles.DrawWireDisc(origin,Vector3.forward, radius);
     }
 }
